@@ -1,1 +1,1 @@
-# Scrit-and-app-List
+# code-and-app-List
