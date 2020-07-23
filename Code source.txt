@@ -1,0 +1,78 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Aug 13 14:30:52 2018
+
+@author: PAGORE
+"""
+
+#import nltk.classify.util
+from nltk.classify import NaiveBayesClassifier
+#from nltk.corpus import names
+ 
+def word_feats(words):
+    return dict([(word, True) for word in words])
+
+ 
+positive_vocab = ['sympas','cool','conseil','confiance','débloqué','nécessaire','utilité','util','admissible','autorisation','géniale','accessible',
+                  'intéressantes','validation','Audit', 'Authentication', 'Confidentialité','fiabilité', 'fiable', 'disponibilité', 'Tolérance',
+                  'Intégrité','Intégre', 'Non-Repudiation', 'Sécurité', 'Tranquillité','abonder','abonde','abondance',
+                  'abondant','accessible','accessible','agilité','agréable','agrément','agréablement','tout autour',
+                  'séduisant','séduisante','altruiste','altruistiquement','étonner','étonné','stupéfaction','étonne',
+                  'incroyable','étonnamment','ambitieux','ambitieusement','améliorer','convenable','aménité','félicité',
+                  'bienheureux','heureusement','joyeux','superproduction','Floraison','fleur','traversin','beau','prime',
+                  'bonus','boom','renforcer','sans bornes','généreux','bien','intelligent','neuf','courageux',
+                  'bravoure','Bravo','liberté','meilleur','satisfait', ':)' ]
+negative_vocab = [ 'énervé','piraté','inutil','nullement','inadmissible','déconseiller','ramer','rame','lente','déçu','bugs','échec',
+                  'recommencer','bugg','inaccessible','inintéressantes','naze','invalidation','impossible','purge','fraude',
+                  'fraudeurs','erronés','arnaque','Volé','Voleur','usurpation','beuger','escroquerie ','mensongaire','mensongaire',
+                  'mensonges','Bloque','Espion','vulnérabilité','Arnaque','Attaque', 'active','Alert', 'Back-Door','Bug', 'Compromise',
+                  'tromper','perdent','victimes','passoire','Intrusion', 'Crack','Cracker', 'Crash','bloqué',
+                  'Sniffing', 'Sniffer', 'Detection','Intrusion', 'Spoofing','Mailbomb','Malicieux', 'Malicieuse',
+                  'faux', 'Repudiation','Passive', 'Penetration','Virus', 'Risque','Spam', 'Vulnerabilité','Vulnerable',
+                  'anormal','abolir','abominable','abominablement','abominer','abomination','avorter','avorté','avorte',
+                  'éroder','abrasif','brusque','brusquement','absence','distrait','absent','absurde','absurdité',
+                  'absurdement','absurdité','abusé','abus','injurieux','épouvantable','abominablement','abîme',
+                  'accidentel','accoster','maudit','accusation','accusations','accuser','accuse','accusant','accusateur',
+                  'acerbe','acerbe','acerbe','mal','douleurs','douloureux','âcre','acharnement','âpreté',
+                  'acrimonieux','Nul','aucune','pas',':(' ]
+neutral_vocab = [ 'vraiment','video','le','son','avoir','est','acteur','faire','connaitre','mot','sa','avec','encore','aussi','lui','et','on']
+ 
+positive_features = [(word_feats(pos), 'pos') for pos in positive_vocab]
+negative_features = [(word_feats(neg), 'neg') for neg in negative_vocab]
+neutral_features = [(word_feats(neu), 'neu') for neu in neutral_vocab]
+ 
+train_set = negative_features + positive_features + neutral_features
+
+classifier = NaiveBayesClassifier.train(train_set) 
+ 
+# Predict
+neg = 0
+pos = 0
+neu = 0
+
+sentence = "always crashes and video never clear st"       
+sentence = sentence.lower()
+words = sentence.split(' ')
+for word in words:
+    classResult = classifier.classify( word_feats(word))
+    if classResult == 'neg':
+        neg = neg + 1
+    if classResult == 'pos':
+        pos = pos + 1
+    if classResult == 'neu':
+        neu = neu + 1
+ 
+print('Positive: ' + str(float(pos)/len(words)))
+print('Negative: ' + str(float(neg)/len(words)))
+print('Neutre: ' + str(float(neu)/len(words)))
+
+print('******************************************')
+print('******************************************')
+
+if pos > neg :
+    print ('Label : Pos')
+if neg > pos :
+    print ('Label : Neg')
+if neu > pos + neg :
+   print ('Label : Neu')
+#print('Polarité : ' + str(float(pos)/len(words)))
